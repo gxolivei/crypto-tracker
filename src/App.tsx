@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ThemeContext, themes } from './ThemeContext';
+
+import Navbar from './components/Navbar';
+import CryptocurrencyList from './components/CryptocurrencyList';
+import CryptocurrencyDetails from './components/CryptocurrencyDetails';
 import './App.css';
 
-function App() {
+const App = () => {
+  const [theme, setTheme] = useState(themes.light);
+
+  const toggleTheme = () => {
+    setTheme(theme === themes.dark ? themes.light : themes.dark);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <Router>
+        <div className="App" style={{ background: theme.background, color: theme.foreground }}>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<CryptocurrencyList />} />
+            <Route path="/:id" element={<CryptocurrencyDetails />} />
+            {/* Other routes go here */}
+          </Routes>
+        </div>
+      </Router>
+    </ThemeContext.Provider>
   );
-}
+};
 
 export default App;
